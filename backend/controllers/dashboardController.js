@@ -10,13 +10,29 @@ exports.getDashboard = asyncHandler(async (req, res) => {
     portfolio: mockData.portfolio,
     recentNews: mockData.news
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      .slice(0, 5),
+      .slice(0, 5)
+      .map(news => ({
+        ...news,
+        publishedAt: news.timestamp || news.publishedAt
+      })),
+    recentAlerts: [
+      ...mockData.stocks.flatMap(s => s.alerts.slice(0, 1)),
+      ...mockData.cryptocurrencies.flatMap(c => c.alerts.slice(0, 1)),
+      ...mockData.alerts
+    ]
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 10),
     activeAlerts: [
       ...mockData.stocks.flatMap(s => s.alerts.slice(0, 1)),
       ...mockData.cryptocurrencies.flatMap(c => c.alerts.slice(0, 1)),
       ...mockData.alerts
     ]
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .slice(0, 10),
+    topPerformers: [
+      ...mockData.stocks,
+      ...mockData.cryptocurrencies
+    ].sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent))
       .slice(0, 10),
     topGainers: [
       ...mockData.stocks,
@@ -40,7 +56,7 @@ exports.getDashboard = asyncHandler(async (req, res) => {
       .sort((a, b) => new Date(a.scheduledTime) - new Date(b.scheduledTime))
       .slice(0, 5)
   };
-  
+
   res.status(200).json({
     success: true,
     data: dashboardData

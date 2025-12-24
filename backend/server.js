@@ -3,7 +3,7 @@ const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
 // Middleware
 app.use(cors());
@@ -38,8 +38,8 @@ app.get('/api/crypto/:symbol', (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     message: 'Pulse API is running',
     version: '2.0.0',
     timestamp: new Date().toISOString()
